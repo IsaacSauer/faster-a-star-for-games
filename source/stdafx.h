@@ -169,7 +169,6 @@ extern bool gRequestShutdown;
 #pragma region FrameworkIncludes
 #include "framework/EliteHelpers/ESingleton.h"
 #include "framework/EliteHelpers/EMemoryPool.h"
-#include "framework/EliteHelpers/EMulticastDelegate.h"
 #include "framework/EliteMath/EMath.h"
 #include "framework/ElitePhysics/EPhysics.h"
 #include "framework/EliteInput/EInputCodes.h"
@@ -179,6 +178,12 @@ extern bool gRequestShutdown;
 #include "framework/EliteTimer/ETimer.h"
 #include "framework/EliteRendering/ERendering.h"
 #include "framework/EliteUI/EImmediateUI.h"
+#include "framework/EliteAI/EliteNavigation/ENavigation.h"
+#include "framework/EliteAI/EliteData/EBlackboard.h"
+#include "framework/EliteAI/EliteDecisionMaking/EDecisionMaking.h"
+#include "framework/EliteAI/EliteDecisionMaking/EliteFiniteStateMachine/EFiniteStateMachine.h"
+#include "framework/EliteAI/EliteDecisionMaking/EliteBehaviorTree/EBehaviorTree.h"
+
 #pragma endregion //FrameworkIncludes
 
 /* --- FRAMEWORK MACROS ---- */

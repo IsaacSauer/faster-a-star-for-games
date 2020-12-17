@@ -14,11 +14,12 @@
 #include "SteeringHelpers.h"
 class ISteeringBehavior;
 
-class SteeringAgent final : public BaseAgent
+class SteeringAgent : public BaseAgent
 {
 public:
 	//--- Constructor & Destructor ---
 	SteeringAgent() = default;
+	SteeringAgent(float radius) : BaseAgent(radius) {};
 	virtual ~SteeringAgent() = default;
 
 	//--- Agent Functions ---
@@ -38,13 +39,13 @@ public:
 
 	Elite::Vector2 GetDirection() const { return GetLinearVelocity().GetNormalized(); }
 
-	void SetSteeringBehavior(ISteeringBehavior* pBehavior) { m_pSteeringBehavior = pBehavior; }
+	virtual void SetSteeringBehavior(ISteeringBehavior* pBehavior) { m_pSteeringBehavior = pBehavior; }
 	ISteeringBehavior* GetSteeringBehavior() const { return m_pSteeringBehavior; }
 
 	void SetRenderBehavior(bool isEnabled) { m_RenderBehavior = isEnabled; }
 	bool CanRenderBehavior() const { return m_RenderBehavior; }
 
-private:
+protected:
 	//--- Datamembers ---
 	ISteeringBehavior* m_pSteeringBehavior = nullptr;
 

@@ -8,6 +8,8 @@
 #define	ELITE_GEOMETRY_TYPES
 
 #include "EGeometry2DUtilities.h"
+#include <array>
+
 
 namespace Elite 
 {
@@ -43,9 +45,7 @@ namespace Elite
 	//Triangle MetaData is used for optimized intersecting and shared edges calculations
 	struct TriangleMetaData final
 	{
-		int IndexLine1 = -1;
-		int IndexLine2 = -1;
-		int IndexLine3 = -1;
+		std::array<int, 3> IndexLines{ {-1, -1, -1} };
 	};
 
 	struct Triangle final
@@ -115,6 +115,13 @@ namespace Elite
 		bool OverlappingYAxis(const Polygon& poly) const;
 		std::vector<Triangle*> GetAdjacentTriangles(const Triangle* t) const;
 		std::vector<Triangle*> GetAdjacentTrianglesOnLine(const Triangle* t, const Line& l) const;
+
+		const Triangle* GetTriangleFromPosition(const Vector2& position, bool onLineAllowed = false) const;
+#ifdef USE_TRIANGLE_METADATA
+		const std::vector<const Triangle*> GetTrianglesFromLineIndex(unsigned int lineIndex) const;
+#endif
+
+
 
 		//Triangulation functions
 		const std::vector<Triangle*>& Triangulate();

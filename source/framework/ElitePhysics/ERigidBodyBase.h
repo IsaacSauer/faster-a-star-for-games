@@ -27,8 +27,7 @@ namespace Elite
 
 		//=== RigidBody Functions ===
 		void AddShape(Elite::EPhysicsShape* pShape);
-		std::vector<const Elite::EPhysicsShape*> GetShapes()
-		{ return m_vShapes;	}
+		void RemoveAllShapes();
 
 		internalTransformType GetTransform();
 		void SetTransform(const internalTransformType& transform);
@@ -61,7 +60,7 @@ namespace Elite
 
 	private:
 		//=== Datamembers ===
-		std::vector<Elite::EPhysicsShape*> m_vShapes = {};
+		std::vector<void*> m_vFixtures = {};
 		internalTransformType m_Transform = {};
 		RigidBodyDefine m_RigidBodyInformation = {};
 		void* m_pBody = nullptr;

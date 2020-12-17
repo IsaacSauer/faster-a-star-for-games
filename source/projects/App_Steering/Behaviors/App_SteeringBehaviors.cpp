@@ -74,7 +74,7 @@ App_SteeringBehaviors::ImGui_Agent App_SteeringBehaviors::AddAgent(BehaviorTypes
 //Functions
 void App_SteeringBehaviors::Start()
 {
-	AddAgent(BehaviorTypes::Seek, -1);
+	AddAgent(BehaviorTypes::Face, -1);
 	stringstream ss;
 	m_TargetLabelsVec.push_back("Mouse");
 	for (UINT i = 0; i < m_AgentVec.size(); ++i)
@@ -92,7 +92,7 @@ void App_SteeringBehaviors::Start()
 void App_SteeringBehaviors::Update(float deltaTime)
 {
 	//INPUT
-	if(INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft) && m_VisualizeTarget)
+	if (INPUTMANAGER->IsMouseButtonUp(InputMouseButton::eLeft) && m_VisualizeTarget)
 	{
 		auto const mouseData = INPUTMANAGER->GetMouseData(InputType::eMouseButton, InputMouseButton::eLeft);
 		m_Target.Position = DEBUGRENDERER2D->GetActiveCamera()->ConvertScreenToWorld({ static_cast<float>(mouseData.X), static_cast<float>(mouseData.Y) });
@@ -185,8 +185,11 @@ void App_SteeringBehaviors::Update(float deltaTime)
 					v = a.pAgent->GetMass();
 					if (ImGui::SliderFloat("Mass ", &v, 0.f, 20.f, "%.2f"))
 						a.pAgent->SetMass(v);
-				}
 
+					v = a.pAgent->GetRadius();
+					if (ImGui::SliderFloat("Radius ", &v, 1.f, 20.f, "%.2f"))
+						a.pAgent->SetRadius(v);
+				}
 
 				bool behaviourModified = false;
 
@@ -213,39 +216,39 @@ void App_SteeringBehaviors::Update(float deltaTime)
 				ImGui::PushItemWidth(100);
 				auto selectedTargetOffset = a.SelectedTarget + 1;
 				if (ImGui::Combo("", &selectedTargetOffset, [](void* vec, int idx, const char** out_text)
-				{
-					std::vector<std::string>* vector = reinterpret_cast<std::vector<std::string>*>(vec);
+					{
+						std::vector<std::string>* vector = reinterpret_cast<std::vector<std::string>*>(vec);
 
-					if (idx < 0 || idx >= (int)vector->size())
-						return false;
+						if (idx < 0 || idx >= (int)vector->size())
+							return false;
 
-					*out_text = vector->at(idx).c_str();
-					return true;
-				}, reinterpret_cast<void*>(&m_TargetLabelsVec), m_TargetLabelsVec.size()))
+						*out_text = vector->at(idx).c_str();
+						return true;
+					}, reinterpret_cast<void*>(&m_TargetLabelsVec), m_TargetLabelsVec.size()))
 				{
 					a.SelectedTarget = selectedTargetOffset - 1;
 					behaviourModified = true;
 				}
-				ImGui::PopItemWidth();
-				ImGui::PopID();
-				ImGui::Spacing();
-				ImGui::Spacing();
+					ImGui::PopItemWidth();
+					ImGui::PopID();
+					ImGui::Spacing();
+					ImGui::Spacing();
 
-				if (behaviourModified)
-					SetAgentBehavior(a);
+					if (behaviourModified)
+						SetAgentBehavior(a);
 
-				if (ImGui::Button("x"))
-				{
-					m_AgentToRemove = i;
-				}
+					if (ImGui::Button("x"))
+					{
+						m_AgentToRemove = i;
+					}
 
-				ImGui::SameLine(0, 20);
+					ImGui::SameLine(0, 20);
 
-				bool isChecked = a.pAgent->CanRenderBehavior();
-				ImGui::Checkbox("Render Debug", &isChecked);
-				a.pAgent->SetRenderBehavior(isChecked);
+					bool isChecked = a.pAgent->CanRenderBehavior();
+					ImGui::Checkbox("Render Debug", &isChecked);
+					a.pAgent->SetRenderBehavior(isChecked);
 
-				ImGui::Unindent();
+					ImGui::Unindent();
 			}
 
 			ImGui::PopID();
@@ -272,7 +275,7 @@ void App_SteeringBehaviors::Update(float deltaTime)
 
 			if (m_TrimWorld)
 				a.pAgent->TrimToWorld(m_TrimWorldSize);
-			
+
 			UpdateTarget(a);
 		}
 	}
@@ -313,6 +316,15 @@ void App_SteeringBehaviors::SetAgentBehavior(ImGui_Agent& a)
 
 	switch (BehaviorTypes(a.SelectedBehavior))
 	{
+	case BehaviorTypes::Flee:
+		a.pBehavior = new Flee();
+		break;
+	case BehaviorTypes::Arrive:
+		a.pBehavior = new Arrive();
+		break;
+	case BehaviorTypes::Face :
+		a.pBehavior = new Face();
+		break;
 	case BehaviorTypes::Seek:
 		a.pBehavior = new Seek();
 		//a.pBehavior = new BlendedSteering({ {new Seek(), 1.f}, {new Wander(), 2.f} });
@@ -320,7 +332,16 @@ void App_SteeringBehaviors::SetAgentBehavior(ImGui_Agent& a)
 	case BehaviorTypes::Wander:
 		a.pBehavior = new Wander();
 		break;
-	//...
+		//...
+	case BehaviorTypes::Align:
+		a.pBehavior = new Align();
+		break;
+	case BehaviorTypes::Pursuit:
+		a.pBehavior = new Pursuit();
+		break;
+	case BehaviorTypes::Evade:
+		a.pBehavior = new Evade();
+		break;
 	}
 
 	UpdateTarget(a);
@@ -331,7 +352,6 @@ void App_SteeringBehaviors::SetAgentBehavior(ImGui_Agent& a)
 
 void App_SteeringBehaviors::UpdateTarget(ImGui_Agent& a)
 {
-
 	bool useMouseAsTarget = a.SelectedTarget < 0;
 	if (useMouseAsTarget)
 		a.pBehavior->SetTarget(m_Target);

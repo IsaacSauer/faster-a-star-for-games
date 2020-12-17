@@ -37,13 +37,13 @@ public:
 	void SetUserData(Elite::RigidBodyUserData userData) { m_pRigidBody->SetUserData(userData); }
 
 	float GetRadius() const { return m_Radius; }
-
+	void SetRadius(float v) { m_Radius = v; }
 protected:
 	RigidBody* m_pRigidBody = nullptr;
-
-private:
 	float m_Radius = 1.f;
 	Elite::Color m_BodyColor = { 1,1,0,1 };
+
+private:
 
 	//C++ make the class non-copyable
 	BaseAgent(const BaseAgent&) {};

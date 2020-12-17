@@ -12,10 +12,9 @@
 #ifdef Sandbox
 	#include "projects/App_Sandbox/App_Sandbox.h"
 #endif
-#ifdef Steering
-	#include "projects\App_Steering\Behaviors\App_SteeringBehaviors.h"
-#endif // Steering
-
+#ifdef FasterAStar
+	#include "projects\App_FasterAStar\App_FasterAStar.h"
+#endif
 
 //Hotfix for genetic algorithms project
 bool gRequestShutdown = false;
@@ -24,6 +23,8 @@ bool gRequestShutdown = false;
 #undef main //Undefine SDL_main as main
 int main(int argc, char* argv[])
 {
+	std::srand(uint32_t(time(nullptr)));
+
 	int x{}, y{};
 	bool runExeWithCoordinates{ argc == 3 };
 
@@ -71,10 +72,9 @@ int main(int argc, char* argv[])
 #ifdef Sandbox
 		myApp = new App_Sandbox();
 #endif
-#ifdef Steering
-		myApp = new App_SteeringBehaviors();
-#endif // Steering
-
+#ifdef FasterAStar
+		myApp = new App_FasterAStar();
+#endif
 		ELITE_ASSERT(myApp, "Application has not been created.");
 
 		//Boot application
