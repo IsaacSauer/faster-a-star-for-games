@@ -41,14 +41,20 @@ void App_FasterAStar::Start()
 	DEBUGRENDERER2D->GetActiveCamera()->SetCenter(Elite::Vector2(12.9361f, 0.2661f));
 
 	//----------- WORLD ------------
-	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(15.f, 10.f), 14.0f, 1.0f));
-	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(-25.f, 10.f), 14.0f, 1.0f));
-	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(-13.f, -8.f), 30.0f, 2.0f));
-	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(15.f, -21.f), 14.0f, 1.0f));
+	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(-50.f, 30.f), 2.f, 30.0f));
+	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(-35.f, 35.f), 2.f, 30.f));
+	m_vNavigationColliders.push_back(new NavigationColliderElement(Elite::Vector2(-20.f, 40.f), 2.f, 30.0f));
 
 	//----------- NAVMESH  ------------
 	std::list<Elite::Vector2> baseBox
-	{ { -60, 30 },{ -60, -30 },{ 60, -30 },{ 60, 30 } };
+	{{ -60, -60}
+	,{ -65, -30},{ -70, 0},{ -65, 30}
+	,{ -60, 60}
+	,{ -30, 65},{0, 70},{ 30, 65}
+	,{ 60, 60 }
+	,{ 65, 30},{ 70, 0},{ 65, -30}
+	,{ 60, -60} 
+	,{ 30, -65},{ 0, -70},{ -30, -65} };
 
 	m_pNavGraph = new Elite::NavGraph(Elite::Polygon(baseBox), m_AgentRadius);
 
@@ -59,6 +65,7 @@ void App_FasterAStar::Start()
 	m_pArriveBehavior->SetTargetRadius(1.0f);
 	m_Target = TargetData(Elite::ZeroVector2);
 	m_pAgent = new SteeringAgent();
+	m_pAgent->SetPosition({ -1, -1 });
 	m_pAgent->SetSteeringBehavior(m_pSeekBehavior);
 	m_pAgent->SetMaxLinearSpeed(m_AgentSpeed);
 	m_pAgent->SetAutoOrient(true);
