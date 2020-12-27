@@ -8,11 +8,13 @@
 
 struct OSquare
 {
+	OSquare(float l, float r, float b, float t) :left{ l }, right{ r }, bottom{ b }, top{ t }{}
+
 	bool IsInside(const Elite::Vector2& p)
 	{
-		return p.x > x && p.y > y && p.x < x + width && p.y < y + height;
+		return p.x > left && p.x < right && p.y > bottom && p.y < top;
 	}
-	float x, y, width, height;
+	float left, right, bottom, top;
 };
 
 template<class T_NodeType, class T_ConnectionType>
@@ -69,7 +71,7 @@ inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes()
 
 	for (int i{}; i < m_pGraph->GetNrOfNodes(); ++i)
 	{
-		if(!m_pGraph->IsNodeValid(i))
+		if (!m_pGraph->IsNodeValid(i))
 			continue;
 
 		EnhancedDijkstra(i, optimalSides[i]);
@@ -79,25 +81,31 @@ inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes()
 		edges.erase(unique(edges.begin(), edges.end()), edges.end());
 
 		// The final task is to iterate through all nodes in the map and build up the bounding boxes that contain each starting node edge.
+		Vector2 startPos = m_pGraph->GetNodeWorldPos(i);
+		m_BoundingBoxes.push_back(std::map<int, OSquare>());
 		for (auto it : edges)
 		{
-			for (auto side : optimalSides[i])
+			float left{ startPos.x };
+			float right{ startPos.x };
+			float bottom{ startPos.y };
+			float top{ startPos.y };
+
+			for (size_t j{}; j < optimalSides[i].size(); ++j)
 			{
-				int from = side->GetFrom();
+				if (it->GetTo() == optimalSides[i][j]->GetTo())
+				{
+					Vector2 pos = m_pGraph->GetNode(j)->GetPosition();
 
-				float left{FLT_MIN};
-				float right{FLT_MAX};
-				float bottom{FLT_MIN};
-				float top{FLT_MAX};
-				
-				Vector2 pos = m_pGraph->GetNode(from)->GetPosition();
+					left = (pos.x < left) ? pos.x : left;
+					right = (pos.x > right) ? pos.x : right;
+					bottom = (pos.y < bottom) ? pos.y : bottom;
+					top = (pos.y > top) ? pos.y : top;
 
-				//left = (pos.x)
+					m_BoundingBoxes[i].insert_or_assign(it->GetTo(), OSquare(left, right, bottom, top));
+				}
 			}
 		}
-		
 	}
-
 
 	return false;
 }
@@ -114,11 +122,11 @@ inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::IsWithinBoundingBox(in
 template<class T_NodeType, class T_ConnectionType>
 inline void OptimizedGraph<T_NodeType, T_ConnectionType>::EnhancedDijkstra(int src, std::vector<T_ConnectionType*>& optimalConnections)
 {
+	//Source: http://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter22_Faster_A_Star_with_Goal_Bounding.pdf
 	/* We will start the Dijkstra search at our single node and give it no destination,
 	causing it to search all nodes in the map, as if it was performing a floodfill.
 	Using Dijkstra to floodfill, the map has the effect of marking every node with the optimal “next step” to optimally get back to the start node.
 	*/
-
 	/* This next step is simply the parent pointer that is recorded during the search.
 	However, the crucial piece of information that we really want to know for a given node is not the next step to take,
 	but which starting node edge was required to eventually get to that node.
@@ -202,7 +210,7 @@ inline void OptimizedGraph<T_NodeType, T_ConnectionType>::EnhancedDijkstra(int s
 	for (size_t i{}; i < closedList.size(); ++i)
 	{
 		optimalConnections[i] = closedList[i].pStartConnection;
-		std::cout << closedList[i].pStartConnection << std::endl;
+		//std::cout << closedList[i].pStartConnection << std::endl;
 	}
 	std::cout << std::endl;
 }
