@@ -27,6 +27,9 @@ namespace Elite
 			const std::vector<NavGraphNode*>& nodePath,
 			Polygon* navMeshPolygon)
 		{
+			if (nodePath.empty())
+				return std::vector<Portal>{};
+
 			//Container
 			std::vector<Portal> vPortals = {};
 
@@ -60,6 +63,9 @@ namespace Elite
 
 		static std::vector<Elite::Vector2> OptimizePortals(const std::vector<Portal>& portals)
 		{
+			if (portals.empty())
+				return std::vector<Elite::Vector2>{};
+
 			//P2 == right point of portal, P1 == left point of portal
 			std::vector<Elite::Vector2> vPath = {};
 			auto apex = portals[0].Line.p1;

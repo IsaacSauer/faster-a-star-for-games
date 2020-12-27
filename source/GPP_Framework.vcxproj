@@ -317,6 +317,7 @@
     <ClCompile Include="framework\EliteRendering\SDLIntegration\SDLHelpers\gl3w.c" />
     <ClCompile Include="framework\main.cpp" />
     <ClCompile Include="projects\App_FasterAStar\App_FasterAStar.cpp" />
+    <ClCompile Include="projects\App_FasterAStar\OptimizedGraph.cpp" />
     <ClCompile Include="projects\App_Sandbox\App_Sandbox.cpp" />
     <ClCompile Include="projects\App_Sandbox\SandboxAgent.cpp" />
     <ClCompile Include="projects\App_Steering\Behaviors\App_SteeringBehaviors.cpp" />
@@ -355,6 +356,7 @@
     <ClInclude Include="framework\EliteAI\EliteGraphs\EInfluenceMap.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAStar.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h" />
+    <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EDijkstra.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EEularianPath.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphEditor.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.h" />
@@ -408,6 +410,7 @@
     <ClInclude Include="framework\EliteRendering\SDLIntegration\SDLHelpers\glcorearb.h" />
     <ClInclude Include="framework\EliteInterfaces\EIApp.h" />
     <ClInclude Include="projects\App_FasterAStar\App_FasterAStar.h" />
+    <ClInclude Include="projects\App_FasterAStar\OptimizedGraph.h" />
     <ClInclude Include="projects\App_Sandbox\App_Sandbox.h" />
     <ClInclude Include="projects\App_Sandbox\SandboxAgent.h" />
     <ClInclude Include="projects\App_Selector.h" />

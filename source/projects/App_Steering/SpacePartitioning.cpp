@@ -81,7 +81,7 @@ void CellSpace::RegisterNeighbors(SteeringAgent* pAgent, float queryRadius)
 	////Elite::Vector2 topRight{ Elite::Clamp(pos.x + queryRadius, 0.f, m_SpaceWidth), Elite::Clamp(pos.y + queryRadius, 0.f, m_SpaceHeight) };
 	//Elite::Vector2 topLeft{ bottomLeft.x, topRight.y };
 	//Elite::Vector2 bottomRight{ topRight.x, bottomLeft.y };
-	//Elite::Rect square{ bottomLeft, queryRadius * 2, queryRadius * 2 };
+	//Elite::Rect Square{ bottomLeft, queryRadius * 2, queryRadius * 2 };
 
 	int bottomRow{ int((pos.y - queryRadius) / m_CellHeight) - 1};
 	int topRow{ int((pos.y + queryRadius) / m_CellHeight) + 1};
@@ -114,7 +114,7 @@ void CellSpace::RegisterNeighbors(SteeringAgent* pAgent, float queryRadius)
 	//m_NrOfNeighbors = 0;
 	//for (auto cell : m_Cells)
 	//{
-	//	if (Elite::IsOverlapping(cell.boundingBox, square))
+	//	if (Elite::IsOverlapping(cell.boundingBox, Square))
 	//	{
 	//		for (auto agent : cell.agents)
 	//		{

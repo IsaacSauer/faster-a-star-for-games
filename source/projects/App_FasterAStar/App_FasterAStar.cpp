@@ -11,6 +11,8 @@ using namespace Elite;
 
 #include "framework\EliteAI\EliteGraphs\ENavGraph.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EAStar.h"
+#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h"
+#include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EDijkstra.h"
 
 //Statics
 bool App_FasterAStar::sShowPolygon = true;
@@ -30,6 +32,7 @@ App_FasterAStar::~App_FasterAStar()
 	SAFE_DELETE(m_pSeekBehavior);
 	SAFE_DELETE(m_pArriveBehavior);
 	SAFE_DELETE(m_pAgent);
+	SAFE_DELETE(m_pOptimizedGraph);
 }
 
 //Functions
@@ -63,6 +66,10 @@ void App_FasterAStar::Start()
 	m_pAgent->SetMaxLinearSpeed(m_AgentSpeed);
 	m_pAgent->SetAutoOrient(true);
 	m_pAgent->SetMass(0.1f);
+
+	//----------- COMPUTE OPTIMIZED GRAPH ------------
+	m_pOptimizedGraph = new OptimizedGraph<Elite::NavGraphNode, Elite::GraphConnection2D>(m_pNavGraph);
+	m_pOptimizedGraph->ComputeBoundingBoxes();
 }
 
 void App_FasterAStar::Update(float deltaTime)

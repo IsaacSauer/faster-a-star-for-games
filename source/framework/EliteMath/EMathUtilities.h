@@ -26,13 +26,13 @@ namespace Elite {
 			return false;
 		return true;
 	}
-	/*! An accurate inverse square root*/
+	/*! An accurate inverse Square root*/
 	inline float InvSqrt(float f) //sqrtf not defined as constexpr
 	{
 		return 1.0f / sqrtf(f);
 	}
-	/*! An fast inverse square root, not fully accurate. Implementation based on Quake III Arena*/
-	/*! Reference: https://betterexplained.com/articles/understanding-quakes-fast-inverse-square-root/ */
+	/*! An fast inverse Square root, not fully accurate. Implementation based on Quake III Arena*/
+	/*! Reference: https://betterexplained.com/articles/understanding-quakes-fast-inverse-Square-root/ */
 	inline float InvSqrtFst(float f)
 	{
 		const float xHalf = 0.5f * f;
@@ -42,7 +42,7 @@ namespace Elite {
 		f = f*(1.5f - xHalf*f*f);
 		return f;
 	}
-	/*! Function to square a number */
+	/*! Function to Square a number */
 	template<typename T, typename = std::enable_if<std::is_pod<T>::value>>
 	constexpr auto Square(T v)
 	{

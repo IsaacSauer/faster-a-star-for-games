@@ -8,6 +8,7 @@
 
 #include "framework\EliteAI\EliteGraphs\EliteGraphUtilities\EGraphRenderer.h"
 #include "framework\EliteAI\EliteNavigation\Algorithms\EPathSmoothing.h"
+#include "OptimizedGraph.h"
 
 class NavigationColliderElement;
 class SteeringAgent;
@@ -45,6 +46,7 @@ private:
 
 	// --Level--
 	std::vector<NavigationColliderElement*> m_vNavigationColliders = {};
+	OptimizedGraph< Elite::NavGraphNode, Elite::GraphConnection2D>* m_pOptimizedGraph;
 
 	// --Pathfinder--
 	std::vector<Elite::Vector2> m_vPath;
