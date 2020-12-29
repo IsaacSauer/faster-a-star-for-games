@@ -81,18 +81,18 @@ I choose to work with my second option, I've also implemented the first option b
 **Check if I can do the Bounding Box check**
 
 So it was said, you need to check if the Goal Position is in a connection's assigned bounding box from the currentNode to actually continue the search.
-That is really it, but it was tricky to actually implement it. Since I had dynamic Start and Goal node, which are added at run time. 
+That is really it, but it was tricky to actually implement it. Since I had a dynamic Start and Goal node, which are added at run time. 
 Since these are only 2 nodes, I did a simple check to skip them.
 
-This is the check if the connection is related to the Start of a Goal node
+This is the check if the connection is related to the Start or a Goal node
 [![TheCheck](https://i.imgur.com/VXvqEIK.png "TheCheck")](https://i.imgur.com/VXvqEIK.png "TheCheck")
 
 **Bounding Box Check**
 
 This shows how I implemented the Bounding Box check.
-First, I find if the boundingBox at the node connection exist,
+1. I find if the boundingBox at the node connection exist,
 If it doesn't exist there was no optimal route.
-Second, if it does exist, I check if the Goal(pos) is within that bounding box.
+2. if it does exist, I check if the Goal(pos) is within that bounding box.
 If it is, that means that connection is the optimal start connection for that Goal node
 [![WithinBouningBox](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")
 ## Conclusion
