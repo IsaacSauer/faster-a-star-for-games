@@ -1,4 +1,5 @@
 #pragma once
+#include "../../App_FasterAStar/OptimizedGraph.h"
 
 namespace Elite
 {
@@ -30,7 +31,7 @@ namespace Elite
 			};
 		};
 
-		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode);
+		std::vector<T_NodeType*> FindPath(T_NodeType* pStartNode, T_NodeType* pDestinationNode, OptimizedGraph<T_NodeType, T_ConnectionType>* pOptimization = nullptr);
 
 	private:
 		float GetHeuristicCost(T_NodeType* pStartNode, T_NodeType* pEndNode) const;
@@ -47,7 +48,7 @@ namespace Elite
 	}
 
 	template <class T_NodeType, class T_ConnectionType>
-	std::vector<T_NodeType*> AStar<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pGoalNode)
+	std::vector<T_NodeType*> AStar<T_NodeType, T_ConnectionType>::FindPath(T_NodeType* pStartNode, T_NodeType* pGoalNode, OptimizedGraph<T_NodeType, T_ConnectionType>* pOptimization)
 	{
 		//Hier A* implenteren
 		std::vector<T_NodeType*> path;
@@ -77,22 +78,32 @@ namespace Elite
 
 			//Else, we get all the connections of the connection's end node (neighbors of the currentNode.pNode)
 			std::list<T_ConnectionType*> connections{ m_pGraph->GetNodeConnections(currentRecord.pNode->GetIndex()) };
+
 			for (auto& connection : connections)
 			{
+				//optimization part
+				if (pOptimization
+					&& (connection->GetFrom() != pStartNode->GetIndex())
+					&& (connection->GetTo() != pGoalNode->GetIndex()))
+				{
+					if (!pOptimization->IsWithinBoundingBox(currentRecord.pNode, *connection, pGoalNode->GetPosition()))
+						continue;
+				}
+
 				float totalGCost = connection->GetCost() + currentRecord.costSoFar;
 
 				auto nodeInClosedList{ std::find_if(closedList.begin(), closedList.end(), [&connection](NodeRecord A) {return A.pNode->GetIndex() == connection->GetTo(); }) };
 				auto nodeInOpenList{ std::find_if(openList.begin(), openList.end(), [&connection](NodeRecord A) {return A.pNode->GetIndex() == connection->GetTo(); }) };
 				if (nodeInClosedList != closedList.end())
 				{
-					if (nodeInClosedList->costSoFar < totalGCost)
+					if (nodeInClosedList->costSoFar <= totalGCost)
 						continue;
 					else
 						closedList.erase(std::remove(closedList.begin(), closedList.end(), *nodeInClosedList), closedList.end());
 				}
 				else if (nodeInOpenList != openList.end())
 				{
-					if (nodeInOpenList->costSoFar < totalGCost)
+					if (nodeInOpenList->costSoFar <= totalGCost)
 						continue;
 					else
 						openList.erase(std::remove(openList.begin(), openList.end(), *nodeInOpenList), openList.end());
@@ -104,6 +115,7 @@ namespace Elite
 				newRecord.costSoFar = totalGCost;
 				newRecord.estimatedTotalCost = GetHeuristicCost(newRecord.pNode, pGoalNode) + totalGCost;
 				openList.push_back(newRecord);
+
 			}
 			//G Remove NodeRecord from the openList and add it to the closedList.
 			openList.erase(std::remove(openList.begin(), openList.end(), currentRecord), openList.end());

@@ -83,6 +83,8 @@ namespace Elite
 		// Allow derived classes to implement a cloning function that returns a base class pointer
 		virtual shared_ptr<IGraph<T_NodeType, T_ConnectionType>> Clone() const { return nullptr; };
 
+		virtual T_NodeType* GetClosestNodeFromPosition(const Vector2& pos) const = 0;
+
 	protected:
 		// A vector of adjacency pConnection lists, mapped to the indices of the nodes
 		// m_Edges[0] returns the list of connections of the pNode with index 0

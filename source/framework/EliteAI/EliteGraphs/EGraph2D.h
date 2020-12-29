@@ -10,6 +10,7 @@
 #include "EGraphConnectionTypes.h"
 #include "EGraphNodeTypes.h"
 #include <iomanip>
+#include <algorithm>
 
 namespace Elite
 {
@@ -30,6 +31,7 @@ namespace Elite
 		void SetConnectionCostsToDistance();
 		void SetNodesColor(const vector<GraphNode2D*>& nodes, const Color& color);
 
+		virtual T_NodeType* GetClosestNodeFromPosition(const Vector2& pos) const override;
 	private:
 		// functions
 		void OnLeftMouseButtonPressed(const MouseData& mouseData);
@@ -136,6 +138,18 @@ namespace Elite
 			if (n)
 				m_Nodes[n->GetIndex()]->SetColor(color);
 		}
+	}
+
+	template<class T_NodeType, class T_ConnectionType>
+	inline T_NodeType* Graph2D<T_NodeType, T_ConnectionType>::GetClosestNodeFromPosition(const Vector2& pos) const
+	{
+		auto closestNode = std::min_element(m_Nodes.begin(), m_Nodes.end(), [&pos](T_NodeType* A, T_NodeType* B)
+			{
+				float distA = DistanceSquared(pos, A->GetPosition());
+				float distB = DistanceSquared(pos, B->GetPosition());
+				return distA < distB;
+			});
+		return *closestNode;
 	}
 
 	template<class T_NodeType, class T_ConnectionType>

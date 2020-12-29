@@ -69,7 +69,7 @@ void App_FasterAStar::Start()
 
 	//----------- COMPUTE OPTIMIZED GRAPH ------------
 	m_pOptimizedGraph = new OptimizedGraph<Elite::NavGraphNode, Elite::GraphConnection2D>(m_pNavGraph);
-	m_pOptimizedGraph->ComputeBoundingBoxes();
+	m_pOptimizedGraph->ComputeBoundingBoxes(m_pNavGraph->GetNavMeshPolygon());
 }
 
 void App_FasterAStar::Update(float deltaTime)
@@ -218,7 +218,7 @@ std::vector<Elite::Vector2> App_FasterAStar::FindPath(Elite::Vector2 startPos, E
 	//CALCULATEPATH
 	//If we have nodes and the target is not the startNode, find a path!
 	auto aStarPathFinder = AStar<NavGraphNode, GraphConnection2D>(graphClone.get(), Elite::HeuristicFunctions::Manhattan);
-	auto m_vPath = aStarPathFinder.FindPath(pStartNode, pEndNode);
+	auto m_vPath = aStarPathFinder.FindPath(pStartNode, pEndNode, m_pOptimizedGraph);
 	std::cout << "New Path Calculated" << std::endl;
 
 	m_DebugNodePositions.clear();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../../framework/EliteAI/EliteGraphs/EIGraph.h"
+//#include "../../../framework/EliteAI/EliteGraphs/EGraph2D.h"
 #include <vector>
 #include <map>
 #include <set>
@@ -8,13 +9,24 @@
 
 struct OSquare
 {
+	OSquare() = default;
 	OSquare(float l, float r, float b, float t) :left{ l }, right{ r }, bottom{ b }, top{ t }{}
 
 	bool IsInside(const Elite::Vector2& p)
 	{
 		return p.x > left && p.x < right && p.y > bottom && p.y < top;
 	}
+	float GetArea() const { return abs((right - left) * (top - bottom)); }
 	float left, right, bottom, top;
+};
+
+struct NodeInfo
+{
+	NodeInfo() = default;
+	NodeInfo(int start) :sides{ std::vector<std::pair<int, OSquare>>{} }, optimalStart{ start }{}
+
+	std::vector<std::pair<int, OSquare>> sides{};
+	std::vector<int> optimalStart{};
 };
 
 template<class T_NodeType, class T_ConnectionType>
@@ -47,21 +59,22 @@ public:
 		};
 	};
 
-	bool ComputeBoundingBoxes();
-	bool IsWithinBoundingBox(int goal, const T_ConnectionType& d);
+	bool ComputeBoundingBoxes(Elite::Polygon* navMesh);
+	bool IsWithinBoundingBox(T_NodeType* currentNode, const T_ConnectionType& d, const Elite::Vector2& pos);
 	void EnhancedDijkstra(int src, std::vector<T_ConnectionType*>& optimalConnections);
 
 	Elite::IGraph<T_NodeType, T_ConnectionType>* GetGraph() const { return m_pGraph; }
+	const std::pair<int, OSquare>& GetConnection(int from, int idx) const;
 private:
 	Elite::IGraph<T_NodeType, T_ConnectionType>* m_pGraph = nullptr;
 
 	//Linked with each node Idx from m_pGraph
-	//vector<map<"connection->from", OSquare>> m_BoundingBoxes;
-	std::vector<std::map<int, OSquare>> m_BoundingBoxes;
+	//vector<vector<pair<"connection->from", OSquare>>> m_BoundingBoxes;
+	std::vector<NodeInfo> m_BoundingBoxes;
 };
 
 template<class T_NodeType, class T_ConnectionType>
-inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes()
+inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes(Elite::Polygon* navMesh)
 {
 	//nodes[actualNodeIdx][actualNodeIdx] = Which Side is most optimal
 	std::vector<std::vector<T_ConnectionType*>> optimalSides(
@@ -82,9 +95,15 @@ inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes()
 
 		// The final task is to iterate through all nodes in the map and build up the bounding boxes that contain each starting node edge.
 		Vector2 startPos = m_pGraph->GetNodeWorldPos(i);
-		m_BoundingBoxes.push_back(std::map<int, OSquare>());
+		m_BoundingBoxes.push_back(NodeInfo{});
+
+		for (auto& sidePerNode : optimalSides[i])
+			m_BoundingBoxes.back().optimalStart.push_back(sidePerNode->GetTo());
+
 		for (auto it : edges)
 		{
+			m_BoundingBoxes.back().sides.push_back({});
+
 			float left{ startPos.x };
 			float right{ startPos.x };
 			float bottom{ startPos.y };
@@ -94,29 +113,79 @@ inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes()
 			{
 				if (it->GetTo() == optimalSides[i][j]->GetTo())
 				{
-					Vector2 pos = m_pGraph->GetNode(j)->GetPosition();
+					Vector2 pos = m_pGraph->GetNodeWorldPos(j);
 
 					left = (pos.x < left) ? pos.x : left;
 					right = (pos.x > right) ? pos.x : right;
 					bottom = (pos.y < bottom) ? pos.y : bottom;
 					top = (pos.y > top) ? pos.y : top;
 
-					m_BoundingBoxes[i].insert_or_assign(it->GetTo(), OSquare(left, right, bottom, top));
+					m_BoundingBoxes.back().sides.back() = { it->GetTo(), OSquare(left, right, bottom, top) };
 				}
 			}
 		}
+
+		for (auto& box : m_BoundingBoxes.back().sides)
+		{
+			Elite::Vector2 leftBottom{ box.second.left, box.second.bottom };
+			Elite::Vector2 rightTop{ box.second.right, box.second.top };
+		
+			auto triangleLeftBottom = navMesh->GetTriangleFromPosition(leftBottom);
+			if (triangleLeftBottom)
+			{
+				auto triangleLeftBottomPoints = triangleLeftBottom->GetPointsInVector();
+		
+				leftBottom = *std::min_element(triangleLeftBottomPoints.begin(), triangleLeftBottomPoints.end(),
+					[](const Elite::Vector2& A, const Elite::Vector2& B)
+					{return A.x < B.x&& A.y < B.y; });
+			}
+			else
+				leftBottom = { navMesh->GetPosVertMinXPos(), navMesh->GetPosVertMinYPos() };
+		
+			auto triangleRightTop = navMesh->GetTriangleFromPosition(rightTop);
+			if (triangleRightTop)
+			{
+				auto triangleRightTopPoints = triangleRightTop->GetPointsInVector();
+		
+				rightTop = *std::max_element(triangleRightTopPoints.begin(), triangleRightTopPoints.end(),
+					[](const Elite::Vector2& A, const Elite::Vector2& B)
+					{return A.x < B.x&& A.y < B.y; });
+			}
+			else
+				rightTop = { navMesh->GetPosVertMaxXPos(), navMesh->GetPosVertMaxYPos() };
+		
+			box.second = { leftBottom.x, rightTop.x, leftBottom.y, rightTop.y };
+		}
 	}
 
-	return false;
+	////sort all boundingboxes of each node from less to greater
+	//for (auto& boundingBoxes : m_BoundingBoxes)
+	//	std::sort(boundingBoxes.sides.begin(), boundingBoxes.sides.end(), [](const std::pair<int, OSquare>& A, const std::pair<int, OSquare>& B)
+	//		{
+	//			return A.second.GetArea() < B.second.GetArea();
+	//		});
+	//
+	return true;
 }
 
 template<class T_NodeType, class T_ConnectionType>
-inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::IsWithinBoundingBox(int goal, const T_ConnectionType& d)
+inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::IsWithinBoundingBox(T_NodeType* currentNode, const T_ConnectionType& d, const Elite::Vector2& pos)
 {
-	if (!m_pGraph->IsNodeValid(goal) || m_pGraph->IsNodeValid(d.GetTo()) || m_pGraph->IsNodeValid(d.GetFrom()))
-		return false;
+	//if (!m_pGraph->IsNodeValid(d.GetFrom()))
+	//	return false;
 
-	return m_BoundingBoxes[d.GetFrom()][d.GetTo()].IsInside(m_pGraph->GetNodeWorldPos(d.GetTo()));
+	auto node = m_pGraph->GetClosestNodeFromPosition(pos);
+
+ 	auto boundingBox = std::find_if(m_BoundingBoxes[currentNode->GetIndex()].sides.begin(), m_BoundingBoxes[currentNode->GetIndex()].sides.end(),
+ 		[&d](const std::pair<int, OSquare>& A)
+ 		{
+ 			return A.first == d.GetTo();
+ 		});
+ 
+ 	if (boundingBox == m_BoundingBoxes[currentNode->GetIndex()].sides.end())
+ 		return false;
+ 
+	return boundingBox->second.IsInside(pos);
 }
 
 template<class T_NodeType, class T_ConnectionType>
@@ -191,6 +260,7 @@ inline void OptimizedGraph<T_NodeType, T_ConnectionType>::EnhancedDijkstra(int s
 					openList.erase(std::remove(openList.begin(), openList.end(), *nodeInOpenList), openList.end());
 			}
 
+//Check if start node
 			if (currentRecord.pNode == pStartNode)
 				currentRecord.pStartConnection = connection;
 
@@ -199,6 +269,8 @@ inline void OptimizedGraph<T_NodeType, T_ConnectionType>::EnhancedDijkstra(int s
 			newRecord.pNode = m_pGraph->GetNode(connection->GetTo());
 			newRecord.costSoFar = totalGCost;
 			newRecord.estimatedTotalCost = totalGCost;
+
+//Assign the root connection to the next node
 			newRecord.pStartConnection = currentRecord.pStartConnection;
 
 			openList.push_back(newRecord);
@@ -210,7 +282,23 @@ inline void OptimizedGraph<T_NodeType, T_ConnectionType>::EnhancedDijkstra(int s
 	for (size_t i{}; i < closedList.size(); ++i)
 	{
 		optimalConnections[i] = closedList[i].pStartConnection;
-		//std::cout << closedList[i].pStartConnection << std::endl;
 	}
-	std::cout << std::endl;
+}
+
+template<class T_NodeType, class T_ConnectionType>
+inline const std::pair<int, OSquare>& OptimizedGraph<T_NodeType, T_ConnectionType>::GetConnection(int from, int idx) const
+{
+	assert((from < (int)m_BoundingBoxes.size()) &&
+		(from >= 0) &&
+		"<OptimizedGraph::GetConnection>: invalid 'from' index");
+
+	assert((idx < (int)m_BoundingBoxes[from].sides.size()) &&
+		(idx >= 0) &&
+		"<OptimizedGraph::GetConnection>: invalid 'to' index");
+
+	if(from < (int)m_BoundingBoxes.size())
+		if(idx < (int)m_BoundingBoxes[from].sides.size())
+			return m_BoundingBoxes[from].sides[idx];
+
+	return {};
 }

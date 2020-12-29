@@ -34,6 +34,7 @@ namespace Elite
 		// returns the column and row of the node in a Vector2
 		using IGraph::GetNodePos;
 		virtual Vector2 GetNodePos(T_NodeType* pNode) const override;
+		virtual T_NodeType* GetClosestNodeFromPosition(const Vector2& pos) const override {};
 
 		// returns the actual world position of the node
 		using IGraph::GetNodeWorldPos;

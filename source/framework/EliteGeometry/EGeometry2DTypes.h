@@ -68,6 +68,33 @@ namespace Elite
 			auto p = p1 + p2 + p3;
 			return p / 3.0f;
 		}
+		bool IsInside(const Vector2& pos) const
+		{
+			Vector2 first{};
+			Vector2 second{};
+
+			//first half
+			first = p2 - p1;
+			second = pos - p1;
+			if (Cross(first, second) < 0)
+				return false;
+
+			//second half
+			first = p3 - p2;
+			second = pos - p2;
+			if (Cross(first, second) < 0)
+				return false;
+
+			//third half
+			first = p1 - p3;
+			second = pos - p3;
+			if (Cross(first, second) < 0)
+				return false;
+
+			return true;
+		}
+
+		std::vector<Vector2> GetPointsInVector() const { return std::vector<Vector2>{p1, p2, p3}; }
 
 		//=== Relational Operators ===
 		bool operator==(const Triangle& t) const
