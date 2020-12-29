@@ -13,7 +13,7 @@ These bounding boxes are computed at different times, but before the actuall run
 Computation time will increase relative on how large your search graph is.
 But never the less, the algorithm at runtime will run faster because of those exlusions.
 
-[![BoundingBoxes](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")
+[![BoundingBoxes](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")]
 
 Here you can see three bounding boxes precomputed for each edge of the black node.
 (Source: Faster A * with Goal Bounding) [[1]]
@@ -33,7 +33,7 @@ foreach edge adjacent to a node
 		(for this, one can use an enhanced dijkstra algorithm)
 ```
 The approuch I took is slightly different. Since my nodes are not in the center of a triangle/square, but in the middle of each edge of a triangle containing an adjacent triangle/square.
-[![NodesMiddleEdge](https://i.imgur.com/NctaQ9M.png "NodesMiddleEdge")](https://i.imgur.com/NctaQ9M.png "NodesMiddleEdge")
+[![NodesMiddleEdge](https://i.imgur.com/NctaQ9M.png "NodesMiddleEdge")]
 
 Because of this, interpretation of terms in my code will be different from terms mentioned in the source paper. 
 
@@ -55,7 +55,7 @@ Having this information we can compute a bounding box for each connection of a n
 **Other Computation Approuch**
 
 I've stumbled upon another approuch when implementing this. What if you could store for each node a container containing a container representing each node it's optimal start connection.
-[![other approuch](https://i.imgur.com/XUkeDJF.png "other approuch")](https://i.imgur.com/XUkeDJF.png "other approuch")
+[![other approuch](https://i.imgur.com/XUkeDJF.png "other approuch")]
 [[1]]
 
 Here you can see all the nodes containing the optimal start connection from the black node.
@@ -85,7 +85,7 @@ That is really it, but it was tricky to actually implement it. Since I had a dyn
 Since these are only 2 nodes, I did a simple check to skip them.
 
 This is the check if the connection is related to the Start or a Goal node
-[![TheCheck](https://i.imgur.com/VXvqEIK.png "TheCheck")](https://i.imgur.com/VXvqEIK.png "TheCheck")
+[![TheCheck](https://i.imgur.com/VXvqEIK.png "TheCheck")]
 
 **Bounding Box Check**
 
@@ -94,7 +94,7 @@ This shows how I implemented the Bounding Box check.
 If it doesn't exist there was no optimal route.
 2. If it does exist, I check if the Goal(pos) is within that bounding box.
 If it is, that means that connection is the optimal start connection for that Goal node
-[![WithinBouningBox](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")
+[![WithinBouningBox](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")]
 ## Conclusion
 
 In my opinion this can really speed up any Path Finding procedure. When considering the constrains for this method, and implementing it right. 
