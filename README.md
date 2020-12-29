@@ -11,11 +11,13 @@ The main goal of this project is to optimize a pathfinding algorithm at runtime 
 This check can be done by checking bounding boxes for each connection from a node with the optimal route to a goal node.
 These bounding boxes are computed at different times, but before the actuall runtime.
 Computation time will increase relative on how large your search graph is.
-But never the less, the algorithm at runtime will be run faster because of those exlusions.
+But never the less, the algorithm at runtime will run faster because of those exlusions.
 
 [![BoundingBoxes](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")
+
 Here you can see three bounding boxes precomputed for each edge of the black node.
-(Source: Faster A * with Goal Bounding) [[source]]
+
+(Source: Faster A * with Goal Bounding) [[1]]
 
 ## Optimization
 **Requirements**
