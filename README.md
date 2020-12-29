@@ -15,7 +15,7 @@ But never the less, the algorithm at runtime will be run faster because of those
 
 [![BoundingBoxes](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")
 Here you can see three bounding boxes precomputed for each edge of the black node.
-(Source: Faster A * with Goal Bounding) [[source]][1]
+(Source: Faster A * with Goal Bounding) [[source]]
 
 ## Optimization
 **Requirements**
@@ -45,7 +45,7 @@ currentRecord = node = n;
 **Other Computation Approuch**
 I've stumbled upon another approuch when implementing this. What if you could store for each node a container containing a container representing each node it's optimal start connection.
 [![other approuch](https://i.imgur.com/XUkeDJF.png "other approuch")](https://i.imgur.com/XUkeDJF.png "other approuch")
-[[source]][1]
+[[source]]
 Here you can see all the nodes containing the optimal start connection from the black node.
 Do that for each node and you would simply have to check if your goal node's optimal start node is the same as your currentConnection in the foreach(connection of currentNode) of the while loop. 
 Using this in my implementation you would need to link the start and goal node each to their closest node. Because the start and goal node are not present when acquiring this information.
@@ -89,7 +89,7 @@ I really had fun implementing this optimization technique, it gave me a bigger p
 If there are any questions or you want to give feedback, feel free to contact me.
 
 ## References
-Steve Rabin **and** Nathan R. Sturtevant, **Faster A * with Goal Bounding** [[1]][1]
+Steve Rabin **and** Nathan R. Sturtevant, **Faster A * with Goal Bounding** [[1]]
 
 
 [1]: http://www.gameaipro.com/GameAIPro3/GameAIPro3_Chapter22_Faster_A_Star_with_Goal_Bounding.pdf "Faster A Star with Goal Bounding"
