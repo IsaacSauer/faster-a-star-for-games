@@ -92,7 +92,7 @@ This is the check if the connection is related to the Start of a Goal node
 This shows how I implemented the Bounding Box check.
 First, I find if the boundingBox at the node connection exist,
 If it doesn't exist there was no optimal route.
-Second, if it does exist I check if the Goal(pos) is within that bounding box.
+Second, if it does exist, I check if the Goal(pos) is within that bounding box.
 If it is, that means that connection is the optimal start connection for that Goal node
 [![WithinBouningBox](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")](https://i.imgur.com/6nZWdCK.png "WithinBouningBox")
 ## Conclusion
