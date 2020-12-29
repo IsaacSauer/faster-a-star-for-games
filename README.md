@@ -81,10 +81,10 @@ I choose to work with my second option, I've also implemented the first option b
 **Check if I can do the Bounding Box check**
 
 So it was said, you need to check if the Goal Position is in a connection's assigned bounding box from the currentNode to actually continue the search.
-That is really it, but it was tricky to actually implement it. Since I had dynamic Start and Goal nodes, which are added at run time. 
+That is really it, but it was tricky to actually implement it. Since I had dynamic Start and Goal node, which are added at run time. 
 Since these are only 2 nodes, I did a simple check to skip them.
 
-This is the check if the connection is related to the Start of Goal node
+This is the check if the connection is related to the Start of a Goal node
 [![TheCheck](https://i.imgur.com/VXvqEIK.png "TheCheck")](https://i.imgur.com/VXvqEIK.png "TheCheck")
 
 **Bounding Box Check**
