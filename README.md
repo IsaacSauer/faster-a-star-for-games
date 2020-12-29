@@ -1,7 +1,7 @@
 # Faster A* For Games
 **Introduction**
 
-The technique I used is mainly called **Goal Bounding**, it is an optimization technique for pathfinding algorithms. In theory, it can be applied to any search graph. After some digging I stumbled upon a paper written by **Steve Rabin and Nathan R. Sturtevant** [[1]][1] where they explain the core fundamentals of how this works.
+The technique I used is mainly called **Goal Bounding**, it is an optimization technique for pathfinding algorithms. In theory, it can be applied to any search graph. After some digging I stumbled upon a paper written by **Steve Rabin and Nathan R. Sturtevant** [[1]] where they explain the core fundamentals of how this works.
 I'm going to take it a step further and implement it into a basic pathfinding program.
 
 ## Main Goal
