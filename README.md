@@ -16,7 +16,6 @@ But never the less, the algorithm at runtime will run faster because of those ex
 [![BoundingBoxes](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")](https://i.imgur.com/Lqw3xcm.png "BoundingBoxes")
 
 Here you can see three bounding boxes precomputed for each edge of the black node.
-
 (Source: Faster A * with Goal Bounding) [[1]]
 
 ## Optimization
@@ -26,15 +25,11 @@ But there are some requirements.
 1. The search graph must be static, in other words it can not change. Since that would simply mean we would have to recompute all the bounding boxes. And this can not be done at runtime.
 2. It is important, if u have a large NavMesh that these precomputations are happening before release.  You will have to save the data to a file, so you can allocate the memory needed for this data on the RAM when initializing the game/program. (I recommend saving the data as pure binary)
 
-**Improvements**
-
-coming soon
-
 ## Implementation
 **Computation Algorithm**
 ```
 for each edge adjacent to a node
-	precompute a bounding box that contains al optimally reachable goals starting from this edge
+	precompute a bounding box that contains all optimally reachable goals starting from this edge
 		(for this, one can use an enhanced dijkstra algorithm)
 ```
 The approuch I took is slightly different. Since my nodes are not in the center of a triangle/square, but in the middle of each edge of a triangle containing an adjacent triangle/square.
@@ -42,7 +37,18 @@ The approuch I took is slightly different. Since my nodes are not in the center 
 Because of this, interpretation of terms in my code will be different from terms mentioned in the source paper. 
 
 connection 		= edge = d = neighbour;
+
 currentRecord = node = n;
+
+This is how the enhanced dijkstra method works:
+So what information we actually need is for each node the optimal starting connection.
+This information is available to us in a normal dijkstra algorithm, it's just not stored since we don't need it in a normal dijkstra algorithm.
+To actually step trough each node during a dijkstra algorithm, we don't give a Goal node (goal node is the same as start node). 
+This gives it the effect to floodfill the whole graph.
+Doing this, we will have each node checked.
+To safe this data you need to pass that connection's ID to it's children, each time you push a new record to the openList.
+
+Having this information we can compute a bounding box for each connection of a node.
 
 **Other Computation Approuch**
 I've stumbled upon another approuch when implementing this. What if you could store for each node a container containing a container representing each node it's optimal start connection.
