@@ -41,7 +41,8 @@ connection 		= edge = d = neighbour;
 
 currentRecord = node = n;
 
-This is how the enhanced dijkstra method works: 
+This is how the enhanced dijkstra method works:
+
 So what information we actually need is for each node the optimal starting connection.
 This information is available to us in a normal dijkstra algorithm, it's just not stored since we don't need it in a normal dijkstra algorithm.
 To actually step trough each node during a dijkstra algorithm, we don't give a Goal node (goal node is the same as start node). 
@@ -52,6 +53,7 @@ To safe this data you need to pass that connection's ID to it's children, each t
 Having this information we can compute a bounding box for each connection of a node.
 
 **Other Computation Approuch**
+
 I've stumbled upon another approuch when implementing this. What if you could store for each node a container containing a container representing each node it's optimal start connection.
 [![other approuch](https://i.imgur.com/XUkeDJF.png "other approuch")](https://i.imgur.com/XUkeDJF.png "other approuch")
 [[1]]
@@ -77,6 +79,7 @@ That left me with 2 options:
 I choose to work with my second option, I've also implemented the first option but didn't got it to work properly.
 
 **Check if I can do the Bounding Box check**
+
 So it was said, you need to check if the Goal Position is in a connection's assigned bounding box from the currentNode to actually continue the search.
 That is really it, but it was tricky to actually implement it. Since I had dynamic Start and Goal nodes, which are added at run time. 
 Since these are only 2 nodes, I did a simple check to skip them.
@@ -85,6 +88,7 @@ This is the check if the connection is related to the Start of Goal node
 [![TheCheck](https://i.imgur.com/VXvqEIK.png "TheCheck")](https://i.imgur.com/VXvqEIK.png "TheCheck")
 
 **Bounding Box Check**
+
 This shows how I implemented the Bounding Box check.
 First, I find if the boundingBox at the node connection exist,
 If it doesn't exist there was no optimal route.
