@@ -171,10 +171,7 @@ inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::ComputeBoundingBoxes(E
 template<class T_NodeType, class T_ConnectionType>
 inline bool OptimizedGraph<T_NodeType, T_ConnectionType>::IsWithinBoundingBox(T_NodeType* currentNode, const T_ConnectionType& d, const Elite::Vector2& pos)
 {
-	//if (!m_pGraph->IsNodeValid(d.GetFrom()))
-	//	return false;
-
-	auto node = m_pGraph->GetClosestNodeFromPosition(pos);
+	//auto node = m_pGraph->GetClosestNodeFromPosition(pos);
 
  	auto boundingBox = std::find_if(m_BoundingBoxes[currentNode->GetIndex()].sides.begin(), m_BoundingBoxes[currentNode->GetIndex()].sides.end(),
  		[&d](const std::pair<int, OSquare>& A)
