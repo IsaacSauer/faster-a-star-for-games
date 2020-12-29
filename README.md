@@ -28,7 +28,7 @@ But there are some requirements.
 ## Implementation
 **Computation Algorithm**
 ```cpp
-for each edge adjacent to a node
+foreach edge adjacent to a node
 	precompute a bounding box that contains all optimally reachable goals starting from this edge
 		(for this, one can use an enhanced dijkstra algorithm)
 ```
