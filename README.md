@@ -41,7 +41,7 @@ connection 		= edge = d = neighbour;
 
 currentRecord = node = n;
 
-This is how the enhanced dijkstra method works:
+This is how the enhanced dijkstra method works: 
 So what information we actually need is for each node the optimal starting connection.
 This information is available to us in a normal dijkstra algorithm, it's just not stored since we don't need it in a normal dijkstra algorithm.
 To actually step trough each node during a dijkstra algorithm, we don't give a Goal node (goal node is the same as start node). 
