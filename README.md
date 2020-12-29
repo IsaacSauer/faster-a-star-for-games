@@ -27,7 +27,7 @@ But there are some requirements.
 
 ## Implementation
 **Computation Algorithm**
-```
+```cpp
 for each edge adjacent to a node
 	precompute a bounding box that contains all optimally reachable goals starting from this edge
 		(for this, one can use an enhanced dijkstra algorithm)
@@ -63,7 +63,7 @@ Do that for each node and you would simply have to check if your goal node's opt
 Using this in my implementation you would need to link the start and goal node each to their closest node. Because the start and goal node are not present when acquiring this information.
 
 **Runtime Algorithm**
-```
+```cpp
 while(!openList.empty())
 	foreach(connection of currentNode)
 		if goal within bounding box of connection of currentNode
