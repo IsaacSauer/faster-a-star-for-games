@@ -34,6 +34,7 @@ for each edge adjacent to a node
 ```
 The approuch I took is slightly different. Since my nodes are not in the center of a triangle/square, but in the middle of each edge of a triangle containing an adjacent triangle/square.
 [![NodesMiddleEdge](https://i.imgur.com/NctaQ9M.png "NodesMiddleEdge")](https://i.imgur.com/NctaQ9M.png "NodesMiddleEdge")
+
 Because of this, interpretation of terms in my code will be different from terms mentioned in the source paper. 
 
 connection 		= edge = d = neighbour;
@@ -53,7 +54,8 @@ Having this information we can compute a bounding box for each connection of a n
 **Other Computation Approuch**
 I've stumbled upon another approuch when implementing this. What if you could store for each node a container containing a container representing each node it's optimal start connection.
 [![other approuch](https://i.imgur.com/XUkeDJF.png "other approuch")](https://i.imgur.com/XUkeDJF.png "other approuch")
-[[source]]
+[[1]]
+
 Here you can see all the nodes containing the optimal start connection from the black node.
 Do that for each node and you would simply have to check if your goal node's optimal start node is the same as your currentConnection in the foreach(connection of currentNode) of the while loop. 
 Using this in my implementation you would need to link the start and goal node each to their closest node. Because the start and goal node are not present when acquiring this information.
