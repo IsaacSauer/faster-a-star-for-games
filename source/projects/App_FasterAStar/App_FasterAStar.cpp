@@ -14,6 +14,8 @@ using namespace Elite;
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EBFS.h"
 #include "framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EDijkstra.h"
 
+#include "Binary.h"
+
 //Statics
 bool App_FasterAStar::sShowPolygon = true;
 bool App_FasterAStar::sShowGraph = false;
@@ -67,9 +69,13 @@ void App_FasterAStar::Start()
 	m_pAgent->SetAutoOrient(true);
 	m_pAgent->SetMass(0.1f);
 
-	//----------- COMPUTE OPTIMIZED GRAPH ------------
 	m_pOptimizedGraph = new OptimizedGraph<Elite::NavGraphNode, Elite::GraphConnection2D>(m_pNavGraph);
-	m_pOptimizedGraph->ComputeBoundingBoxes(m_pNavGraph->GetNavMeshPolygon());
+	//----------- COMPUTE OPTIMIZED GRAPH ------------
+	//m_pOptimizedGraph->ComputeBoundingBoxes(m_pNavGraph->GetNavMeshPolygon());
+
+	//----------- SAVE BOUNDING BOX ------------
+	//SaveBoundingBoxes("projects/App_FasterAStar/Resources/bb.bin");
+	LoadBoundingBoxes("projects/App_FasterAStar/Resources/bb.bin");
 }
 
 void App_FasterAStar::Update(float deltaTime)
@@ -82,7 +88,7 @@ void App_FasterAStar::Update(float deltaTime)
 			Elite::Vector2((float)mouseData.X, (float)mouseData.Y));
 		m_vPath = FindPath(m_pAgent->GetPosition(), mouseTarget);
 	}
-
+	
 	//Check if a path exist and move to the following point
 	if (m_vPath.size() > 0)
 	{
@@ -105,6 +111,18 @@ void App_FasterAStar::Update(float deltaTime)
 	}
 
 	UpdateImGui();
+
+	if (m_Save)
+	{
+		m_Save = false;
+		SaveBoundingBoxes("projects/App_FasterAStar/Resources/bb.bin");
+	}
+	if (m_Load)
+	{
+		m_Load = false;
+		LoadBoundingBoxes("projects/App_FasterAStar/Resources/bb.bin");
+	}
+
 	m_pAgent->Update(deltaTime);
 }
 
@@ -157,6 +175,16 @@ void App_FasterAStar::Render(float deltaTime) const
 			DEBUGRENDERER2D->DrawSegment(m_vPath[i], m_vPath[i + 1], Color(1.f, g, g), -0.2f);
 		}
 	}
+}
+
+void App_FasterAStar::SaveBoundingBoxes(const std::string& path)
+{
+	Binary::SaveToFile(path, *m_pOptimizedGraph);
+}
+
+void App_FasterAStar::LoadBoundingBoxes(const std::string& path)
+{
+	Binary::LoadFromFile(path, *m_pOptimizedGraph);
 }
 
 std::vector<Elite::Vector2> App_FasterAStar::FindPath(Elite::Vector2 startPos, Elite::Vector2 endPos)
@@ -268,6 +296,14 @@ void App_FasterAStar::UpdateImGui()
 		ImGui::Text("%.1f FPS", ImGui::GetIO().Framerate);
 		ImGui::Unindent();
 
+		ImGui::Spacing();
+		ImGui::Separator();
+		ImGui::Spacing();
+		ImGui::Spacing();
+
+		m_Save = ImGui::Button("Save", ImVec2(50, 15.f));
+		m_Load = ImGui::Button("Load", ImVec2(50, 15.f));
+		
 		ImGui::Spacing();
 		ImGui::Separator();
 		ImGui::Spacing();

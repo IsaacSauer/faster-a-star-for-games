@@ -34,6 +34,8 @@ public:
 	void Update(float deltaTime) override;
 	void Render(float deltaTime) const override;
 
+	void SaveBoundingBoxes(const std::string& path);
+	void LoadBoundingBoxes(const std::string& path);
 private:
 	//Datamembers
 	// --Agents--
@@ -67,6 +69,8 @@ private:
 	void UpdateImGui();
 	std::vector<Elite::Vector2> FindPath(Elite::Vector2 startPos, Elite::Vector2 endPos);
 
+	bool m_Save{ false };
+	bool m_Load{ false };
 private:
 	//C++ make the class non-copyable
 	App_FasterAStar(const App_FasterAStar&) = delete;

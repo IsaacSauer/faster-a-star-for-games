@@ -63,3 +63,4 @@ source/TempFiles/Debug_Exam/SteeringBehaviors.obj
 source/TempFiles/Debug_Exam/TheFlock.obj
 source/TempFiles/Debug_Exam/vc142.idb
 source/TempFiles/Debug_Exam/vc142.pdb
+*.obj

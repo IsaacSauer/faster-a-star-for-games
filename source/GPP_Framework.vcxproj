@@ -410,6 +410,7 @@
     <ClInclude Include="framework\EliteRendering\SDLIntegration\SDLHelpers\glcorearb.h" />
     <ClInclude Include="framework\EliteInterfaces\EIApp.h" />
     <ClInclude Include="projects\App_FasterAStar\App_FasterAStar.h" />
+    <ClInclude Include="projects\App_FasterAStar\Binary.h" />
     <ClInclude Include="projects\App_FasterAStar\OptimizedGraph.h" />
     <ClInclude Include="projects\App_Sandbox\App_Sandbox.h" />
     <ClInclude Include="projects\App_Sandbox\SandboxAgent.h" />

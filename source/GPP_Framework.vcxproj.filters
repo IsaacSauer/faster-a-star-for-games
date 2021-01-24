@@ -133,6 +133,7 @@
     <ClInclude Include="projects\App_FasterAStar\App_FasterAStar.h" />
     <ClInclude Include="projects\App_FasterAStar\OptimizedGraph.h" />
     <ClInclude Include="framework\EliteAI\EliteGraphs\EliteGraphAlgorithms\EDijkstra.h" />
+    <ClInclude Include="projects\App_FasterAStar\Binary.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgui.ini" />

@@ -6,6 +6,7 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include "Binary.h"
 
 struct OSquare
 {
@@ -24,6 +25,43 @@ struct NodeInfo
 {
 	NodeInfo() = default;
 	NodeInfo(int start) :sides{ std::vector<std::pair<int, OSquare>>{} }, optimalStart{ start }{}
+
+	void Write(std::ofstream& out) const
+	{
+		Binary::Writers::WritePOD(out, sides.size());
+		for (auto& elem : sides)
+		{
+			Binary::Writers::WritePOD(out, elem.first);
+			Binary::Writers::WritePOD(out, elem.second);
+		}
+
+		Binary::Writers::WritePOD(out, optimalStart.size());
+		for (auto& elem : optimalStart)
+		{
+			Binary::Writers::WritePOD(out, elem);
+		}
+	}
+	void Read(std::ifstream& in)
+	{
+		int size{};
+		Binary::Readers::ReadPOD(in, size);
+		for (int i{}; i < size; ++i)
+		{
+			int first{};
+			OSquare sec{};
+			Binary::Readers::ReadPOD(in, first);
+			Binary::Readers::ReadPOD(in, sec);
+			sides.push_back({ first, sec });
+		}
+
+		Binary::Readers::ReadPOD(in, size);
+		for (int i{}; i < size; ++i)
+		{
+			int elem{};
+			Binary::Readers::ReadPOD(in, elem);
+			optimalStart.push_back(elem);
+		}
+	}
 
 	std::vector<std::pair<int, OSquare>> sides{};
 	std::vector<int> optimalStart{};
@@ -65,6 +103,19 @@ public:
 
 	Elite::IGraph<T_NodeType, T_ConnectionType>* GetGraph() const { return m_pGraph; }
 	const std::pair<int, OSquare>& GetConnection(int from, int idx) const;
+
+	const std::vector<NodeInfo>& GetBoundingBoxes() const { return m_BoundingBoxes; };
+	void SetBoundingBoxes(const std::vector<NodeInfo>& vec) { m_BoundingBoxes = vec; };
+
+	void Write(std::ofstream& out) const
+	{
+		Binary::Writers::Write(out, m_BoundingBoxes);
+	}
+	void Read(std::ifstream& in)
+	{
+		Binary::Readers::Read(in, m_BoundingBoxes);
+	}
+
 private:
 	Elite::IGraph<T_NodeType, T_ConnectionType>* m_pGraph = nullptr;
 
